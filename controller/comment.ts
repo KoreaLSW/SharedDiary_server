@@ -4,11 +4,15 @@ import { CreateComments, GetComment } from '../type/type';
 import * as commentRepository from '../data/comment';
 
 export async function getComments(req: Request, res: Response) {
-    const diaryId: string = req.params.diaryId as string;
-    console.log('getComments', diaryId);
+    const diaryId: string = req.query.diary_id as string;
+    const userId: string = req.query.user_id as string;
+    console.log('getComments', req.query);
 
     try {
-        const data: GetComment = await commentRepository.getComments(diaryId);
+        const data: GetComment = await commentRepository.getComments(
+            diaryId,
+            userId
+        );
         res.status(200).json(data);
     } catch (err) {
         console.log(err);

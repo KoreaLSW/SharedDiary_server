@@ -13,6 +13,7 @@ export type Diary = {
     diary_id: number;
     user_id: string;
     create_date: string;
+    dreate_date: string;
     contents: string;
     share_type: number;
     weather: number;
@@ -30,6 +31,7 @@ export type GetDiary = {
     profile_img: string | null;
     diary_id: number;
     create_date: string;
+    dreate_date: string;
     contents: string;
     share_type: number;
     weather: number;
@@ -62,4 +64,19 @@ export type GetComment = {
     diary_id: string;
     contents: string;
     create_date: string;
+};
+
+export type CommentLike = {
+    user_id: string; // 내 아이디
+    comment_id: string; // 댓글 아이디
+};
+
+export type WeatherType = {
+    weather_id: string; // 날씨 아이디
+    weather_text: string; // 날씨 텍스트
+};
+
+export type EmotionType = {
+    emotion_id: string; // 감정 아이디
+    emotion_text: string; // 감정 텍스트
 };

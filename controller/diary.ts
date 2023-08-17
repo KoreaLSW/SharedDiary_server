@@ -24,7 +24,7 @@ export async function getDiary(req: Request, res: Response) {
 
 export async function getDiaryAll(req: IGetUserAuthInfoRequest, res: Response) {
     const userId: string = req.params.userId as string;
-    console.log('getDiaryAll', userId);
+    console.log('getDiaryAll1', userId);
 
     try {
         const user: User = await userRepository.findByUserId(userId);

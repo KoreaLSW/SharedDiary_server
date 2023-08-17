@@ -3,9 +3,11 @@ import cors from 'cors';
 import helmet from 'helmet';
 
 import authRoute from './router/auth';
+import typeRoute from './router/type';
 import diaryRoute from './router/diary';
 import diaryLikeRoute from './router/diaryLike';
 import commentRoute from './router/comment';
+import commentLikeRoute from './router/commentLike';
 import { db } from './db/mysql';
 import { config } from './config';
 import cookieParser from 'cookie-parser';
@@ -24,9 +26,11 @@ app.use(cookieParser());
 app.use(cors(corsOption));
 
 app.use('/auth', authRoute);
+app.use('/type', typeRoute);
 app.use('/diary', diaryRoute);
 app.use('/diary/like', diaryLikeRoute);
 app.use('/diary/comment', commentRoute);
+app.use('/diary/comment/like', commentLikeRoute);
 
 // 파일경로가 없을때
 app.use((req, res, next) => {
