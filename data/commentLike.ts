@@ -23,8 +23,6 @@ export async function getCommentLikeCheck(
 
 export async function create(commentLike: CommentLike): Promise<void> {
     const { comment_id, user_id } = commentLike;
-    console.log('create comment_id:', comment_id);
-    console.log('create user_id:', user_id);
 
     return db
         .execute('INSERT INTO comment_like(comment_id,user_id)VALUE(?,?)', [
@@ -38,7 +36,6 @@ export async function create(commentLike: CommentLike): Promise<void> {
 
 export async function remove(commentLike: CommentLike) {
     const { comment_id, user_id } = commentLike;
-    console.log('remove', commentLike);
 
     return db.execute(
         'DELETE FROM comment_like WHERE comment_id = ? AND user_id = ?',

@@ -13,12 +13,10 @@ export async function getComments(
     diaryId: string,
     userId: string
 ): Promise<GetComment> {
-    console.log('getComments', diaryId, userId);
     return await db
         .execute(SELECT_DIARY, [userId, diaryId])
         .then((result: any) => {
             const data: GetComment = bufferToString(result[0]);
-            console.log('getComments', data);
 
             return data;
         });

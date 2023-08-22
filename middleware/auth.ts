@@ -33,7 +33,6 @@ export const isAuth = async (
     }
 
     if (!token) {
-        console.log('isAuth Token');
         return res.status(401).json(AUTH_ERROR);
     }
 

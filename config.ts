@@ -30,4 +30,9 @@ export const config = {
     cors: {
         allowedOrigin: required('CORS_ALLOW_ORIGIN'),
     },
+    ftp: {
+        host: required('FTP_SERVER_HOST'),
+        user: required('FTP_SERVER_USER'),
+        password: required('FTP_SERVER_PASSWORD'),
+    },
 };

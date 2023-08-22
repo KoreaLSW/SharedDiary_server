@@ -10,7 +10,6 @@ import bufferToString from '../bufferToString/bufferToString';
 
 export async function getType(req: Request, res: Response) {
     const type: string = req.params.type as string;
-    console.log('getType', type);
 
     let data: WeatherType | EmotionType;
     try {

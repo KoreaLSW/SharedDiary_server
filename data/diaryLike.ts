@@ -23,8 +23,6 @@ export async function getDiaryLikeCheck(
 
 export async function create(diaryLike: DiaryLike): Promise<void> {
     const { diary_id, user_id } = diaryLike;
-    console.log('create diary_id:', diary_id);
-    console.log('create user_id:', user_id);
 
     return db
         .execute('INSERT INTO diary_like(diary_id,user_id)VALUE(?,?)', [
@@ -38,7 +36,6 @@ export async function create(diaryLike: DiaryLike): Promise<void> {
 
 export async function remove(diaryLike: DiaryLike) {
     const { diary_id, user_id } = diaryLike;
-    console.log('remove', diaryLike);
 
     return db.execute(
         'DELETE FROM diary_like WHERE diary_id = ? AND user_id = ?',

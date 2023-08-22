@@ -1,6 +1,6 @@
 import bufferToString from '../bufferToString/bufferToString';
 import { db } from '../db/mysql';
-import { Diary, GetDiary } from '../type/type';
+import { SetDiary, GetDiary } from '../type/type';
 
 const SELECT_LIKE_COUNT: string =
     '(SELECT COUNT(*) FROM diary_like AS dl WHERE dl.diary_id = d.diary_id) AS like_count';
@@ -12,34 +12,30 @@ const SELECT_LIKE_CHECK =
 const SELECT_DIARY: string = `SELECT u.user_id, u.nickname, u.profile_img, d.*, ${SELECT_LIKE_COUNT}, ${SELECT_COMMENT_COUNT}, ${SELECT_LIKE_CHECK} FROM diary AS d JOIN user_info AS u ON d.user_id = u.user_id`;
 
 export async function getDiaryByUserId(userId: string): Promise<GetDiary> {
-    console.log('getDiaryByUserId', userId);
-
     return db
         .execute(`${SELECT_DIARY} WHERE d.user_id = ? `, [userId, userId])
         .then((result: any) => {
             //console.log('findByUsername', result);
             const data: GetDiary = bufferToString(result[0]);
-            console.log('getDiaryByUserIdData', data);
+            //console.log('getDiaryByUserIdData', data);
 
             return data;
         });
 }
 
 export async function getAll(userId: string): Promise<GetDiary> {
-    console.log('getAll', userId);
     return await db.execute(SELECT_DIARY, [userId]).then((result: any) => {
         const data: GetDiary = bufferToString(result[0]);
-        console.log('getAllData', data);
 
         return data;
     });
 }
 
-export async function create(diary: Diary): Promise<Diary> {
+export async function create(diary: SetDiary): Promise<SetDiary> {
     const {
-        diary_id,
         user_id,
         create_date,
+        diary_date,
         contents,
         share_type,
         weather,
@@ -52,10 +48,11 @@ export async function create(diary: Diary): Promise<Diary> {
     } = diary;
     return db
         .execute(
-            'INSERT INTO diary(user_id,create_date,contents,share_type,weather,emotion,image_01,image_02,image_03,image_04,image_05)VALUE(?,?,?,?,?,?,?,?,?,?,?)',
+            'INSERT INTO diary(user_id,create_date,diary_date,contents,share_type,weather,emotion,image_01,image_02,image_03,image_04,image_05)VALUE(?,?,?,?,?,?,?,?,?,?,?,?)',
             [
                 user_id,
                 new Date(),
+                diary_date,
                 contents,
                 share_type,
                 weather,

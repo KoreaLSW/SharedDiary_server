@@ -2,11 +2,11 @@ import { Request, Response } from 'express';
 
 import { CreateComments, GetComment } from '../type/type';
 import * as commentRepository from '../data/comment';
+import { IGetUserAuthInfoRequest } from '../middleware/auth';
 
 export async function getComments(req: Request, res: Response) {
     const diaryId: string = req.query.diary_id as string;
     const userId: string = req.query.user_id as string;
-    console.log('getComments', req.query);
 
     try {
         const data: GetComment = await commentRepository.getComments(
@@ -20,17 +20,22 @@ export async function getComments(req: Request, res: Response) {
 }
 
 export async function createComments(req: Request, res: Response) {
-    console.log('createComments', req.body);
-
     const comments: CreateComments = req.body;
     const data = await commentRepository.create(comments);
     res.status(201).json(data);
 }
 
-export async function removeComments(req: Request, res: Response) {
+export async function removeComments(
+    req: IGetUserAuthInfoRequest,
+    res: Response
+) {
     const commentId: string = req.body.commentId as string;
     const userId: string = req.body.userId as string;
 
+    if (userId !== req.userId) {
+        return res.sendStatus(403);
+    }
+
     await commentRepository.remove(commentId);
-    res.status(204);
+    res.sendStatus(204);
 }

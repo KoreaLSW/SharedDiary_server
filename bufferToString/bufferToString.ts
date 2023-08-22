@@ -28,6 +28,13 @@ export default function bufferToString<T>(data: T): T {
                 .replace('T', ' ')
                 .substring(0, 19);
             result[key] = formattedDate;
+        } else if (key === 'diary_date') {
+            const koreanTime = new Date(data[key] as Date);
+            koreanTime.setHours(koreanTime.getHours() + 9); // 시간 조정
+
+            const formattedDate = koreanTime.toISOString().split('T')[0]; // "YYYY-MM-DD" 형식으로 변환
+
+            result[key] = formattedDate;
         } else {
             result[key] = bufferToString(data[key]);
         }
