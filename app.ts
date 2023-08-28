@@ -3,6 +3,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 
 import authRoute from './router/auth';
+import userRoute from './router/user';
 import typeRoute from './router/type';
 import diaryRoute from './router/diary';
 import diaryLikeRoute from './router/diaryLike';
@@ -26,6 +27,7 @@ app.use(cookieParser());
 app.use(cors(corsOption));
 
 app.use('/auth', authRoute);
+app.use('/user', userRoute);
 app.use('/type', typeRoute);
 app.use('/diary', diaryRoute);
 app.use('/diary/like', diaryLikeRoute);
@@ -39,7 +41,7 @@ app.use((req, res, next) => {
 
 // 서버애러
 app.use((error, res, next) => {
-    console.error(error);
+    console.error('serverError: ', error);
     res.sendStatus(500);
 });
 

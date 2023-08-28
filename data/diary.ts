@@ -23,12 +23,59 @@ export async function getDiaryByUserId(userId: string): Promise<GetDiary> {
         });
 }
 
-export async function getAll(userId: string): Promise<GetDiary> {
-    return await db.execute(SELECT_DIARY, [userId]).then((result: any) => {
-        const data: GetDiary = bufferToString(result[0]);
+export async function getDiaryByMonthPage(
+    userId: string,
+    month: string,
+    page: string,
+    offset: string
+): Promise<GetDiary> {
+    return db
+        .execute(
+            `${SELECT_DIARY} WHERE d.user_id = ? AND MONTH(diary_date) = ? ORDER BY d.diary_date ASC, d.create_date ASC LIMIT ?, ? `,
+            [userId, userId, month, page, offset]
+        )
+        .then((result: any) => {
+            //console.log('findByUsername', result);
+            const data: GetDiary = bufferToString(result[0]);
+            //console.log('getDiaryByUserIdData', data);
 
-        return data;
-    });
+            return data;
+        });
+}
+
+export async function getDiaryByMonthHome(
+    userId: string,
+    month: string
+): Promise<GetDiary> {
+    return db
+        .execute(
+            `${SELECT_DIARY} WHERE d.user_id = ? AND MONTH(d.diary_date) = ? `,
+            [userId, userId, month]
+        )
+        .then((result: any) => {
+            //console.log('findByUsername', result);
+            const data: GetDiary = bufferToString(result[0]);
+            //console.log('getDiaryByUserIdData', data);
+
+            return data;
+        });
+}
+
+export async function getAll(
+    userId: string,
+    page: string,
+    offset: string
+): Promise<GetDiary> {
+    return await db
+        .execute(
+            `${SELECT_DIARY} AND d.share_type = 1  ORDER BY d.diary_date DESC, d.create_date DESC LIMIT ?, ?`,
+            [userId, page, offset]
+        )
+        .then((result: any) => {
+            const data: GetDiary = bufferToString(result[0]);
+
+            return data;
+        });
 }
 
 export async function create(diary: SetDiary): Promise<SetDiary> {

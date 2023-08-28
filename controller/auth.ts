@@ -7,10 +7,16 @@ import { User } from '../type/type';
 import { config } from '../config';
 import { IGetUserAuthInfoRequest } from '../middleware/auth';
 import bufferToString from '../bufferToString/bufferToString';
+import { imageUpload } from '../middleware/image';
 
 // 회원가입
 export async function signup(req: Request, res: Response) {
-    const user: User = req.body;
+    const profileImg = req.files;
+    const user: User = JSON.parse(req.body.signup);
+    console.log('signup img : ', profileImg);
+    console.log('signup user : ', user);
+
+    //const user: User = req.body;
     user.create_date = new Date().toString();
 
     // Bind parameters must not contain undefined. To pass SQL NULL specify JS null
@@ -30,10 +36,20 @@ export async function signup(req: Request, res: Response) {
 
     const nickCheck = await userRepository.findByNickname(user.nickname);
     if (nickCheck) {
-        // 이미 사용자가 있을때
+        // 이미 닉네임이 있을때
         return res
             .status(409)
             .json({ message: `닉네임 ${user.nickname}가 이미 존재합니다.` });
+    }
+
+    const profilePath = await imageUpload(
+        profileImg as Express.Multer.File[],
+        user.user_id,
+        'profile'
+    );
+
+    if (profilePath) {
+        user.profile_img = profilePath[0] ?? null;
     }
 
     // 비밀번호를 암호화하는작업
@@ -91,7 +107,7 @@ export async function update(req: Request, res: Response) {
     }
 
     if (user.password) {
-        // 패스워드변경하는곳
+        // 패스워드 암호화 후 변경하는곳
         const hashed = await bcrypt.hash(
             user.password,
             config.bcrypt.saltRounds

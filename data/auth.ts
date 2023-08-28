@@ -87,7 +87,7 @@ export async function updateUserInfo(user: User): Promise<any> {
                     nickname,
                     email,
                     birthday,
-                    new Date(),
+                    create_date,
                     introduction,
                     profile_img,
                     user_id,
