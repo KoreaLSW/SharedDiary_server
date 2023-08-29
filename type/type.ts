@@ -1,6 +1,7 @@
 export type User = {
     user_id: string;
     password: string;
+    passwordUpdate: string;
     nickname: string;
     email: string;
     birthday: string;
@@ -78,4 +79,9 @@ export type WeatherType = {
 export type EmotionType = {
     emotion_id: string; // 감정 아이디
     emotion_text: string; // 감정 텍스트
+};
+
+export type Follow = {
+    followerId: string;
+    followingId: string;
 };

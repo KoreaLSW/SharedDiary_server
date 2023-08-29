@@ -14,7 +14,12 @@ const upload = multer({ storage });
 router.post('/signup', upload.array('profile-image', 1), authController.signup);
 router.post('/login', authController.login);
 router.post('/logout', authController.logout);
-router.post('/update', isAuth, authController.update);
+router.post(
+    '/update',
+    isAuth,
+    upload.array('profile-image', 1),
+    authController.update
+);
 router.get('/me', isAuth, authController.me);
 router.delete('/:id', isAuth, authController.remove);
 

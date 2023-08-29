@@ -21,6 +21,7 @@ const upload = multer({ storage });
 // GET /diary
 // GET /diary?userId=:userId
 router.get('/', isAuth, diaryController.getDiaryUser);
+router.get('/page', isAuth, diaryController.getDiaryUserPage);
 router.get('/month/page', isAuth, diaryController.getMonthDiaryPage);
 router.get('/month/home', isAuth, diaryController.getMonthDiary);
 router.get('/all', isAuth, diaryController.getDiaryAll);

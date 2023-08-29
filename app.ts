@@ -9,6 +9,7 @@ import diaryRoute from './router/diary';
 import diaryLikeRoute from './router/diaryLike';
 import commentRoute from './router/comment';
 import commentLikeRoute from './router/commentLike';
+import followRoute from './router/follow';
 import { db } from './db/mysql';
 import { config } from './config';
 import cookieParser from 'cookie-parser';
@@ -33,6 +34,7 @@ app.use('/diary', diaryRoute);
 app.use('/diary/like', diaryLikeRoute);
 app.use('/diary/comment', commentRoute);
 app.use('/diary/comment/like', commentLikeRoute);
+app.use('/follow', followRoute);
 
 // 파일경로가 없을때
 app.use((req, res, next) => {

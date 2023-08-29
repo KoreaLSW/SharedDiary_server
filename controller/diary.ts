@@ -25,6 +25,44 @@ export async function getDiaryUser(req: Request, res: Response) {
     }
 }
 
+export async function getDiaryUserPage(
+    req: IGetUserAuthInfoRequest,
+    res: Response
+) {
+    console.log('getDiaryUserPage');
+    const userId: string = req.query.userId as string;
+    const page: string = req.query.page as string;
+    const offset: string = req.query.offset as string;
+
+    let data: GetDiary;
+    try {
+        const user: User = await userRepository.findByUserId(userId);
+        if (!user) {
+            return res.status(401).json({ message: '사용자가 없습니다.' });
+        }
+
+        if (req.userId === userId) {
+            data = await diaryRepository.getDiaryByMyUserIdPage(
+                userId,
+                page,
+                offset
+            );
+        } else {
+            data = await diaryRepository.getDiaryByUserIdPage(
+                userId,
+                page,
+                offset
+            );
+        }
+
+        //console.log('getdiary data', data);
+
+        res.status(200).json({ data, nextPage: page });
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 export async function getMonthDiaryPage(req: Request, res: Response) {
     const Today = new Date();
     const Month = Today.getMonth() + 1;
@@ -83,7 +121,7 @@ export async function getMonthDiary(req: Request, res: Response) {
     }
 }
 
-export async function getDiaryAll(req: IGetUserAuthInfoRequest, res: Response) {
+export async function getDiaryAll(req: Request, res: Response) {
     const userId: string = req.query.userId as string;
     const page: string = req.query.page as string;
     const offset: string = req.query.offset as string;

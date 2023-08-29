@@ -13,7 +13,48 @@ const SELECT_DIARY: string = `SELECT u.user_id, u.nickname, u.profile_img, d.*, 
 
 export async function getDiaryByUserId(userId: string): Promise<GetDiary> {
     return db
-        .execute(`${SELECT_DIARY} WHERE d.user_id = ? `, [userId, userId])
+        .execute(
+            `${SELECT_DIARY} WHERE d.user_id = ? ORDER BY d.diary_date DESC, d.create_date DESC`,
+            [userId, userId]
+        )
+        .then((result: any) => {
+            //console.log('findByUsername', result);
+            const data: GetDiary = bufferToString(result[0]);
+            //console.log('getDiaryByUserIdData', data);
+
+            return data;
+        });
+}
+
+export async function getDiaryByMyUserIdPage(
+    userId: string,
+    page: string,
+    offset: string
+): Promise<GetDiary> {
+    return db
+        .execute(
+            `${SELECT_DIARY} WHERE d.user_id = ? ORDER BY d.diary_date DESC, d.create_date ASC LIMIT ?, ?`,
+            [userId, userId, page, offset]
+        )
+        .then((result: any) => {
+            //console.log('findByUsername', result);
+            const data: GetDiary = bufferToString(result[0]);
+            //console.log('getDiaryByUserIdData', data);
+
+            return data;
+        });
+}
+
+export async function getDiaryByUserIdPage(
+    userId: string,
+    page: string,
+    offset: string
+): Promise<GetDiary> {
+    return db
+        .execute(
+            `${SELECT_DIARY} WHERE d.user_id = ? AND d.share_type = 1 ORDER BY d.diary_date DESC, d.create_date ASC LIMIT ?, ?`,
+            [userId, userId, page, offset]
+        )
         .then((result: any) => {
             //console.log('findByUsername', result);
             const data: GetDiary = bufferToString(result[0]);
@@ -31,7 +72,7 @@ export async function getDiaryByMonthPage(
 ): Promise<GetDiary> {
     return db
         .execute(
-            `${SELECT_DIARY} WHERE d.user_id = ? AND MONTH(diary_date) = ? ORDER BY d.diary_date ASC, d.create_date ASC LIMIT ?, ? `,
+            `${SELECT_DIARY} WHERE d.user_id = ? AND MONTH(diary_date) = ? ORDER BY d.diary_date DESC, d.create_date DESC LIMIT ?, ? `,
             [userId, userId, month, page, offset]
         )
         .then((result: any) => {
@@ -68,7 +109,7 @@ export async function getAll(
 ): Promise<GetDiary> {
     return await db
         .execute(
-            `${SELECT_DIARY} AND d.share_type = 1  ORDER BY d.diary_date DESC, d.create_date DESC LIMIT ?, ?`,
+            `${SELECT_DIARY} AND d.share_type = 1  ORDER BY d.create_date DESC  LIMIT ?, ?`,
             [userId, page, offset]
         )
         .then((result: any) => {

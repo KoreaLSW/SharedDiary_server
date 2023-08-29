@@ -12,12 +12,6 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 router.get('/:id', isAuth, userController.getUser);
-router.put(
-    '/',
-    isAuth,
-    upload.array('profile-image', 1),
-    userController.updateUser
-);
 
 //router.post('/login',  authController.login);
 

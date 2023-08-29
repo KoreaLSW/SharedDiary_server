@@ -7,7 +7,7 @@ import { User } from '../type/type';
 import { config } from '../config';
 import { IGetUserAuthInfoRequest } from '../middleware/auth';
 import bufferToString from '../bufferToString/bufferToString';
-import { imageUpload } from '../middleware/image';
+import { imageRemove, imageUpload } from '../middleware/image';
 
 // 회원가입
 export async function signup(req: Request, res: Response) {
@@ -97,34 +97,71 @@ export async function logout(req: Request, res: Response) {
 
 // 비밀번호 변경 및 유저정보 변경
 export async function update(req: Request, res: Response) {
-    const user: User = req.body;
+    const profileImg = req.files;
+    const jsonUser: User = JSON.parse(req.body.user);
 
-    const userCheck: User = await userRepository.findByUserId(user.user_id);
+    console.log('Auth-profileImg', profileImg);
+    console.log('Auth-jsonUser', jsonUser);
+
+    const userCheck: User = await userRepository.findByUserId(jsonUser.user_id);
     if (!userCheck) {
         return res
             .status(401)
             .json({ message: '사용자 또는 비밀번호가 잘못되었습니다.' });
     }
 
-    if (user.password) {
+    const nickname: User = await userRepository.findByNickname(
+        jsonUser.user_id
+    );
+    if (nickname) {
+        return res.status(401).json({ message: '중복된 닉네임입니다.' });
+    }
+
+    if (jsonUser.passwordUpdate) {
         // 패스워드 암호화 후 변경하는곳
         const hashed = await bcrypt.hash(
-            user.password,
+            jsonUser.passwordUpdate,
             config.bcrypt.saltRounds
         );
         await userRepository.updatePassword({
-            ...user,
+            ...jsonUser,
             password: hashed,
         });
 
-        const token: string = createJwtToken(user); // cookie header
+        const token: string = createJwtToken(jsonUser); // cookie header
         setToken(res, token);
-        res.status(201).json({ token, user: user.user_id });
-    } else {
-        // 유저정보 변경하는곳
-        await userRepository.updateUserInfo(user);
-        res.status(201).json({ user: user.user_id });
     }
+
+    if (jsonUser.profile_img && profileImg?.length !== 0) {
+        const imageReName = jsonUser.profile_img.replace(
+            'https://' + config.ftp.host,
+            '/www'
+        );
+
+        try {
+            imageRemove(imageReName);
+        } catch (err) {
+            console.log('imageRemove Error: ', err);
+
+            return res.sendStatus(403);
+        }
+    }
+
+    if (profileImg?.length !== 0) {
+        const profilePath = await imageUpload(
+            profileImg as Express.Multer.File[],
+            jsonUser.user_id,
+            'profile'
+        );
+
+        if (profilePath) {
+            jsonUser.profile_img = profilePath[0] ?? null;
+        }
+    }
+
+    // 유저정보 변경하는곳
+    await userRepository.updateUserInfo(jsonUser);
+    res.status(201).json({ user: jsonUser.user_id });
 }
 
 export async function remove(req: Request, res: Response) {
