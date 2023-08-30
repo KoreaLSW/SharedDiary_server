@@ -27,14 +27,24 @@ export async function imageUpload(
 ) {
     const client = await createClient();
 
+    let WIDTH: number = 800;
+    let HEIGHT: number = 800;
     let imagePatharray: string[] = [];
+    if (type === 'diary') {
+        WIDTH = 800;
+        HEIGHT = 800;
+    } else {
+        WIDTH = 200;
+        HEIGHT = 200;
+        console.log('프로필');
+    }
 
     try {
         for (let i = 0; i < imagePath.length; i++) {
             // 랜덤 문자열 생성
             const randomImgName = uuidv4().replace(/-/g, '').substring(0, 12);
             const imageBuffer = await sharp(imagePath[i].buffer)
-                .resize({ width: 800, height: 800 })
+                .resize({ width: WIDTH, height: HEIGHT })
                 .jpeg({ quality: 80 }) // JPEG 품질 설정
                 .toBuffer();
 

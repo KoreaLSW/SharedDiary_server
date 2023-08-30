@@ -29,7 +29,6 @@ export async function getDiaryUserPage(
     req: IGetUserAuthInfoRequest,
     res: Response
 ) {
-    console.log('getDiaryUserPage');
     const userId: string = req.query.userId as string;
     const page: string = req.query.page as string;
     const offset: string = req.query.offset as string;
