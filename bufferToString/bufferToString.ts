@@ -17,7 +17,10 @@ export default function bufferToString<T>(data: T): T {
 
     const result: any = {};
     for (const key in data) {
-        if (key === 'create_date' && data[key] instanceof Date) {
+        if (
+            (key === 'create_date' && data[key] instanceof Date) ||
+            (key === 'message_date' && data[key] instanceof Date)
+        ) {
             // Adjust the date to Korean time (+09:00)
             const koreanTime = new Date(data[key] as Date);
             koreanTime.setHours(koreanTime.getHours() + 9);
