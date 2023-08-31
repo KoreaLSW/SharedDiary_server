@@ -31,11 +31,11 @@ export async function imageUpload(
     let HEIGHT: number = 800;
     let imagePatharray: string[] = [];
     if (type === 'diary') {
-        WIDTH = 200;
-        HEIGHT = 200;
+        WIDTH = 400;
+        HEIGHT = 400;
     } else {
-        WIDTH = 60;
-        HEIGHT = 60;
+        WIDTH = 100;
+        HEIGHT = 100;
         console.log('프로필');
     }
 
