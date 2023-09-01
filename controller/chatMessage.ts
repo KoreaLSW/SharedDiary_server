@@ -5,26 +5,30 @@ import { GetMessage, SelectMessage, User, sendMessage } from '../type/type';
 import { getSocketIO } from '../socket/socketModule';
 
 export async function getChatMessageList(req: Request, res: Response) {
-    const selectMessage: SelectMessage = req.query as SelectMessage;
-    console.log('getChatMessageList', selectMessage);
+    const { room_id, user_id, participant_user_id }: SelectMessage = req.query
+        .selectMessage as SelectMessage;
+    console.log('getChatMessageList', room_id, user_id, participant_user_id);
 
     try {
-        const user: User = await userRepository.findByUserId(
-            selectMessage.user_id
-        );
+        const user: User = await userRepository.findByUserId(user_id);
         if (!user) {
             return res.status(401).json({ message: '사용자가 없습니다.' });
         }
 
-        await chatMessageRepository.readChatMessage(selectMessage);
+        await chatMessageRepository.readChatMessage(
+            room_id,
+            user_id,
+            participant_user_id
+        );
 
         const data: GetMessage = await chatMessageRepository.getChatMessageList(
-            selectMessage
+            user_id,
+            participant_user_id
         );
         //console.log('getdiary data', data);
 
         res.status(200).json(data);
-        getSocketIO().emit('message', data);
+        getSocketIO().emit('chatMessage', data);
     } catch (err) {
         console.log(err);
     }
@@ -38,5 +42,5 @@ export async function sendChatMessage(req: Request, res: Response) {
 
     const data = await chatMessageRepository.sendChatMessage(send);
     res.status(201).json(data);
-    getSocketIO().emit('message', 'sendChatMessage');
+    getSocketIO().emit('chatMessage', 'sendChatMessage');
 }

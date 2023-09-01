@@ -2,9 +2,10 @@ import bufferToString from '../bufferToString/bufferToString';
 import { db } from '../db/mysql';
 import { GetMessage, SelectMessage, sendMessage } from '../type/type';
 
-export async function getChatMessageList(users: SelectMessage): Promise<any> {
-    const { user_id, participant_user_id } = users;
-
+export async function getChatMessageList(
+    user_id: string,
+    participant_user_id: string
+): Promise<any> {
     return db
         .execute(
             `SELECT cm.chat_id,
@@ -63,22 +64,21 @@ export async function sendChatMessage(users: sendMessage): Promise<any> {
 }
 
 export async function readChatMessage(
-    selectMessage: SelectMessage
+    room_id: string,
+    user_id: string,
+    participant_user_id: string
 ): Promise<any> {
-    const { room_id, user_id, participant_user_id } = selectMessage;
     return db
         .execute(
-            `SET @last_message_id = (
-                SELECT MAX(chat_id)
-                FROM chat_messages
-                WHERE user_id = ?
-                    AND room_id = ?
-            );
-            
-            INSERT INTO message_reads (chat_id, user_id)
-            SELECT cm.chat_id, ?
-            FROM chat_messages cm
-            WHERE cm.chat_id <= @last_message_id
+            `INSERT INTO message_reads (chat_id, user_id)
+                SELECT cm.chat_id, ?
+                FROM chat_messages cm
+                WHERE cm.chat_id <= (
+                    SELECT MAX(chat_id)
+                    FROM chat_messages
+                    WHERE user_id = ?
+                        AND room_id = ?
+                )
                 AND cm.room_id = ?
                 AND NOT EXISTS (
                     SELECT 1
@@ -86,13 +86,7 @@ export async function readChatMessage(
                     WHERE mr.chat_id = cm.chat_id
                         AND mr.user_id = ?
                 );`,
-            [
-                user_id,
-                room_id,
-                participant_user_id,
-                room_id,
-                participant_user_id,
-            ]
+            [user_id, user_id, room_id, room_id, participant_user_id]
         )
         .then((result: any) => {
             return result[0].insertId;

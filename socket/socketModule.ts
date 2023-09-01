@@ -32,7 +32,7 @@ const initSocket = (server: any) => {
         });
 
         socket.on('message', (data) => {
-            console.log('data', data);
+            console.log('message data', data);
         });
 
         socket.on('disconnect', () => {

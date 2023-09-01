@@ -58,18 +58,66 @@ export async function getChatRoomList(userId: string): Promise<any> {
 
 export async function createRoom(users: ChatRoomUsers): Promise<any> {
     const { user_id, participant_user_id } = users;
-    return db
-        .execute(
-            `INSERT INTO chat_rooms (room_name, create_date)
-                VALUES (?, NOW());
-                SET @room_id = LAST_INSERT_ID();
-                INSERT INTO room_participants (user_id, room_id)
-                VALUES (?, @room_id), (?, @room_id);`,
-            [`${participant_user_id}님과의 채팅`, user_id, participant_user_id]
-        )
-        .then((result: any) => {
-            return result[0].insertId;
-        });
+
+    // 채팅방을 생성하기 전에 미리 생성된 채팅방이 있는지 확인
+    const [rows] = await db.execute(
+        `SELECT rp1.room_id
+            FROM room_participants rp1
+            WHERE rp1.user_id = ? AND EXISTS (
+                SELECT 1
+                FROM room_participants rp2
+                WHERE rp2.user_id = ? AND rp1.room_id = rp2.room_id
+            );
+        `,
+        [user_id, participant_user_id]
+    );
+
+    if ((rows as any).length > 0) {
+        // 미리 만들어진 채팅방이 존재함
+
+        const roomId = (rows as any)[0].room_id;
+        return roomId;
+    } else {
+        // 미리 만들어진 채팅방이 존재하지 않음
+
+        // 1. 채팅 방 생성
+        const createRoomQuery = `INSERT INTO chat_rooms (room_name, create_date)
+                                    VALUES (?, NOW())`;
+        const createRoomParams = [`${participant_user_id}님과의 채팅`];
+
+        // 2. 방 생성 후의 마지막 삽입된 ID를 가져옴
+        const getLastInsertIdQuery = `SELECT LAST_INSERT_ID() as room_id`;
+
+        // 3. 방 참가자 추가
+        const addParticipantsQuery = `INSERT INTO room_participants (user_id, room_id)
+                                        VALUES (?, ?), (?, ?)`;
+        const addParticipantsParams = [user_id, 0, participant_user_id, 0]; // 여기서 0은 아직 알 수 없는 값을 의미합니다.
+
+        try {
+            // 1. 채팅 방 생성
+            const [createRoomResult] = await db.execute(
+                createRoomQuery,
+                createRoomParams
+            );
+
+            // 2. 방 생성 후의 마지막 삽입된 ID를 가져옴
+            const [lastInsertIdResult] = await db.execute(getLastInsertIdQuery);
+            const room_id = (lastInsertIdResult as any)[0].room_id;
+
+            // 3. 방 참가자 추가
+            await db.execute(addParticipantsQuery, [
+                user_id,
+                room_id,
+                participant_user_id,
+                room_id,
+            ]);
+
+            return room_id;
+        } catch (error) {
+            console.error('Error creating room:', error);
+            throw error;
+        }
+    }
 }
 
 export async function removeRoom(users: ChatRoomUsers): Promise<any> {
