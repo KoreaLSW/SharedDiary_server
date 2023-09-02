@@ -14,12 +14,15 @@ export async function getChatMessageList(req: Request, res: Response) {
         if (!user) {
             return res.status(401).json({ message: '사용자가 없습니다.' });
         }
-
-        await chatMessageRepository.readChatMessage(
-            room_id,
-            user_id,
-            participant_user_id
-        );
+        try {
+            await chatMessageRepository.readChatMessage(
+                room_id,
+                user_id,
+                participant_user_id
+            );
+        } catch (err) {
+            console.log('readChatMessage', err);
+        }
 
         const data: GetMessage = await chatMessageRepository.getChatMessageList(
             user_id,

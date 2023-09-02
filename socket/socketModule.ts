@@ -35,8 +35,8 @@ const initSocket = (server: any) => {
             console.log('message data', data);
         });
 
-        socket.on('disconnect', () => {
-            console.log('클라이언트 연결 해제됨');
+        socket.on('disconnect', (data) => {
+            console.log('클라이언트 연결 해제됨', data);
         });
     });
 };
