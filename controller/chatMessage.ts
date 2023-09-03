@@ -35,7 +35,7 @@ export async function getChatMessageList(
         //console.log('getdiary data', data);
 
         res.status(200).json(data);
-        getSocketIO().emit(`${req.userId} chatMessage`, data);
+        getSocketIO().emit(`${room_id} chatMessage`, data);
     } catch (err) {
         console.log(err);
     }
@@ -52,5 +52,5 @@ export async function sendChatMessage(
 
     const data = await chatMessageRepository.sendChatMessage(send);
     res.status(201).json(data);
-    getSocketIO().emit(`${req.userId} chatMessage`, 'sendChatMessage');
+    //getSocketIO().emit(` chatMessage`, 'sendChatMessage');
 }
