@@ -24,7 +24,7 @@ export async function getChatRoomList(
         }
 
         const data: GetChatRoomList = await chatRoomRepository.getChatRoomList(
-            userId
+            req.userId!
         );
         //console.log('getdiary data', data);
 
