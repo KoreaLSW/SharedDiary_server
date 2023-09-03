@@ -26,7 +26,7 @@ export async function getChatRoomList(req: Request, res: Response) {
         //console.log('getdiary data', data);
 
         res.status(200).json(data);
-        getSocketIO().emit('message', data);
+        getSocketIO().emit('readChatRoom', data);
     } catch (err) {
         console.log(err);
     }
@@ -40,7 +40,7 @@ export async function createChatRoom(req: Request, res: Response) {
 
     const data = await chatRoomRepository.createRoom(users);
     res.status(201).json(data);
-    getSocketIO().emit('message', 'createChatRoom');
+    getSocketIO().emit('readChatRoom', 'createChatRoom');
 }
 
 export async function removeChatRoom(
@@ -56,7 +56,7 @@ export async function removeChatRoom(
 
     await chatRoomRepository.removeRoom(users);
     res.sendStatus(204);
-    getSocketIO().emit('message', 'removeChatRoom');
+    getSocketIO().emit('readChatRoom', 'removeChatRoom');
 }
 
 export async function updateChatRoom(req: Request, res: Response) {
@@ -65,5 +65,5 @@ export async function updateChatRoom(req: Request, res: Response) {
 
     const data = await chatRoomRepository.updateRoom(updatechat);
     res.status(201).json(data);
-    getSocketIO().emit('message', 'updateChatTitle');
+    getSocketIO().emit('readChatRoom', 'updateChatTitle');
 }
