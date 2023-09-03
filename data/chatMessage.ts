@@ -40,7 +40,7 @@ export async function getChatMessageList(
         .then((result: any) => {
             //console.log('getMessageRoomList', result[0]);
             const data: GetMessage = bufferToString(result[0]);
-            console.log('getChatMessageList', data);
+            //console.log('getChatMessageList', data);
 
             return data;
         });

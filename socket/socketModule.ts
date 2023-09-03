@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken';
 import { Server, Socket } from 'socket.io';
 import { config } from '../config'; // config 파일 경로에 맞게 수정
+import { GetChatRoomList } from '../type/type';
+import { getChatRoomList } from '../data/chatRoom';
 
 let socketIO: Server<any> | null = null;
 
@@ -11,7 +13,8 @@ const initSocket = (server: any) => {
         },
     });
 
-    socketIO.on('connection', (socket: Socket) => {
+    socketIO.on('connection', async (socket: Socket) => {
+        const userId = socket.handshake.query.user;
         console.log('소켓 클라이언트 연결됨');
 
         socket.use((packet, next) => {
@@ -31,9 +34,11 @@ const initSocket = (server: any) => {
             );
         });
 
-        socket.on('message', (data) => {
-            console.log('message data', data);
-        });
+        const roomList: GetChatRoomList = await getChatRoomList(
+            userId as string
+        );
+
+        socket.emit(`${userId} readChatRoom`, roomList);
 
         socket.on('disconnect', (data) => {
             console.log('클라이언트 연결 해제됨', data);
