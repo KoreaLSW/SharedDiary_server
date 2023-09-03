@@ -52,5 +52,5 @@ export async function sendChatMessage(
 
     const data = await chatMessageRepository.sendChatMessage(send);
     res.status(201).json(data);
-    //getSocketIO().emit(` chatMessage`, 'sendChatMessage');
+    getSocketIO().emit(`${send.room_id} chatMessage`, 'sendChatMessage');
 }

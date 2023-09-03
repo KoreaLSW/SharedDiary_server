@@ -117,6 +117,7 @@ export type SelectMessage = {
 };
 
 export type sendMessage = {
+    room_id: number;
     user_id: string;
     participant_user_id: string;
     message: string;
