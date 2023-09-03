@@ -34,11 +34,12 @@ const initSocket = (server: any) => {
             );
         });
 
-        const roomList: GetChatRoomList = await getChatRoomList(
-            userId as string
-        );
-
-        socket.emit(`${userId} readChatRoom`, roomList);
+        if (userId) {
+            const roomList: GetChatRoomList = await getChatRoomList(
+                userId as string
+            );
+            socket.emit(`${userId} readChatRoom`, roomList);
+        }
 
         socket.on('disconnect', (data) => {
             console.log('클라이언트 연결 해제됨', data);
