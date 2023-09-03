@@ -38,6 +38,8 @@ const initSocket = (server: any) => {
             const roomList: GetChatRoomList = await getChatRoomList(
                 userId as string
             );
+            console.log('roomList', roomList);
+
             socket.emit(`readChatRoom`, roomList);
         }
 
