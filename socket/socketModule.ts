@@ -34,14 +34,14 @@ const initSocket = (server: any) => {
             );
         });
 
-        // if (userId) {
-        //     const roomList: GetChatRoomList = await getChatRoomList(
-        //         userId as string
-        //     );
-        //     console.log('roomList', roomList);
+        if (userId) {
+            const roomList: GetChatRoomList = await getChatRoomList(
+                userId as string
+            );
+            console.log('roomList', roomList);
 
-        //     socket.emit(`readChatRoom`, roomList);
-        // }
+            socket.emit(`readChatRoom`, roomList);
+        }
 
         socket.on('disconnect', (data) => {
             console.log('클라이언트 연결 해제됨', data);
