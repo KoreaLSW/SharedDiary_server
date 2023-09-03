@@ -38,7 +38,7 @@ const initSocket = (server: any) => {
             const roomList: GetChatRoomList = await getChatRoomList(
                 userId as string
             );
-            socket.emit(`${userId} readChatRoom`, roomList);
+            socket.emit(`readChatRoom`, roomList);
         }
 
         socket.on('disconnect', (data) => {
