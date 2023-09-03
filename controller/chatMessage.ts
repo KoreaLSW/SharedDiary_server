@@ -3,8 +3,12 @@ import * as userRepository from '../data/auth';
 import * as chatMessageRepository from '../data/chatMessage';
 import { GetMessage, SelectMessage, User, sendMessage } from '../type/type';
 import { getSocketIO } from '../socket/socketModule';
+import { IGetUserAuthInfoRequest } from '../middleware/auth';
 
-export async function getChatMessageList(req: Request, res: Response) {
+export async function getChatMessageList(
+    req: IGetUserAuthInfoRequest,
+    res: Response
+) {
     const { room_id, user_id, participant_user_id }: SelectMessage = req.query
         .selectMessage as SelectMessage;
     console.log('getChatMessageList', room_id, user_id, participant_user_id);
@@ -31,7 +35,7 @@ export async function getChatMessageList(req: Request, res: Response) {
         //console.log('getdiary data', data);
 
         res.status(200).json(data);
-        getSocketIO().emit('chatMessage', data);
+        getSocketIO().emit(`${req.userId} chatMessage`, data);
     } catch (err) {
         console.log(err);
     }
@@ -39,11 +43,14 @@ export async function getChatMessageList(req: Request, res: Response) {
     res.status(200);
 }
 
-export async function sendChatMessage(req: Request, res: Response) {
+export async function sendChatMessage(
+    req: IGetUserAuthInfoRequest,
+    res: Response
+) {
     const send: sendMessage = req.body;
     console.log('sendChatMessage', send);
 
     const data = await chatMessageRepository.sendChatMessage(send);
     res.status(201).json(data);
-    getSocketIO().emit('chatMessage', 'sendChatMessage');
+    getSocketIO().emit(`${req.userId} chatMessage`, 'sendChatMessage');
 }

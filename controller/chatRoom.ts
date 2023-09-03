@@ -10,7 +10,10 @@ import {
 } from '../type/type';
 import { IGetUserAuthInfoRequest } from '../middleware/auth';
 
-export async function getChatRoomList(req: Request, res: Response) {
+export async function getChatRoomList(
+    req: IGetUserAuthInfoRequest,
+    res: Response
+) {
     const userId: string = req.query.userId as string;
     console.log('getChatRoomList', userId);
 
@@ -26,7 +29,7 @@ export async function getChatRoomList(req: Request, res: Response) {
         //console.log('getdiary data', data);
 
         res.status(200).json(data);
-        getSocketIO().emit('readChatRoom', data);
+        getSocketIO().emit(`${req.userId} readChatRoom`, data);
     } catch (err) {
         console.log(err);
     }
@@ -34,13 +37,16 @@ export async function getChatRoomList(req: Request, res: Response) {
     res.status(200);
 }
 
-export async function createChatRoom(req: Request, res: Response) {
+export async function createChatRoom(
+    req: IGetUserAuthInfoRequest,
+    res: Response
+) {
     const users: ChatRoomUsers = req.body;
     console.log('createChatRoom', users);
 
     const data = await chatRoomRepository.createRoom(users);
     res.status(201).json(data);
-    getSocketIO().emit('readChatRoom', 'createChatRoom');
+    getSocketIO().emit(`${req.userId} readChatRoom`, 'createChatRoom');
 }
 
 export async function removeChatRoom(
@@ -56,14 +62,17 @@ export async function removeChatRoom(
 
     await chatRoomRepository.removeRoom(users);
     res.sendStatus(204);
-    getSocketIO().emit('readChatRoom', 'removeChatRoom');
+    getSocketIO().emit(`${req.userId} readChatRoom`, 'removeChatRoom');
 }
 
-export async function updateChatRoom(req: Request, res: Response) {
+export async function updateChatRoom(
+    req: IGetUserAuthInfoRequest,
+    res: Response
+) {
     const updatechat: UpdateChatTitle = req.params as UpdateChatTitle;
     console.log('updateChatRoom', updatechat);
 
     const data = await chatRoomRepository.updateRoom(updatechat);
     res.status(201).json(data);
-    getSocketIO().emit('readChatRoom', 'updateChatTitle');
+    getSocketIO().emit(`${req.userId} readChatRoom`, 'updateChatTitle');
 }
