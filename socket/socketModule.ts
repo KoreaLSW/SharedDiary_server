@@ -15,7 +15,7 @@ const initSocket = (server: any) => {
 
     socketIO.on('connection', async (socket: Socket) => {
         const userId = socket.handshake.query.user;
-        console.log('소켓 클라이언트 연결됨 v 1.0.2');
+        console.log('소켓 클라이언트 연결됨 v 1.0.3');
 
         socket.on('readChatRoomList', async (data) => {
             console.log('abc~~~~~~~~~~~~', data, userId);
@@ -25,7 +25,7 @@ const initSocket = (server: any) => {
             );
             console.log('roomLIST@#!@#!@#@#', roomList);
 
-            socket.emit(`${data} readChatRoom`, roomList);
+            socket.emit(`admin readChatRoom`, roomList);
         });
 
         socket.on('disconnect', (data) => {
