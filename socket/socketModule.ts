@@ -18,12 +18,14 @@ const initSocket = (server: any) => {
         console.log('소켓 클라이언트 연결됨');
 
         socket.on('readChatRoomList', async (data) => {
-            console.log('abc~~~~~~~~~~~~', data);
+            console.log('abc~~~~~~~~~~~~', data, userId);
 
-            const roomList: GetChatRoomList = await getChatRoomList(
-                userId as string
-            );
-            socket.emit('readChatRoom', roomList);
+            if (userId === data) {
+                const roomList: GetChatRoomList = await getChatRoomList(
+                    userId as string
+                );
+                socket.emit('readChatRoom', roomList);
+            }
         });
 
         socket.on('disconnect', (data) => {
