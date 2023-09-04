@@ -26,6 +26,8 @@ export async function getChatMessageList(
             return res.status(401).json({ message: '사용자가 없습니다.' });
         }
         try {
+            console.log('데이터', room_id, user_id, participant_user_id);
+
             await chatMessageRepository.readChatMessage(
                 room_id,
                 user_id,
