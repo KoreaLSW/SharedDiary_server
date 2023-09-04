@@ -64,6 +64,18 @@ export async function sendChatMessage(
     const send: sendMessage = req.body;
     console.log('sendChatMessage', send);
 
+    try {
+        console.log('샌드데이터', send);
+
+        await chatMessageRepository.readChatMessage(
+            send.room_id.toString(),
+            send.user_id,
+            send.participant_user_id
+        );
+    } catch (err) {
+        console.log('readChatMessage', err);
+    }
+
     const data = await chatMessageRepository.sendChatMessage(send);
     res.status(201).json(data);
 
