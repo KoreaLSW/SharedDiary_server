@@ -23,7 +23,7 @@ const initSocket = (server: any) => {
             const roomList: GetChatRoomList = await getChatRoomList(
                 data as string
             );
-            socket.emit('readChatRoom', roomList);
+            socket.emit(`${data} readChatRoom`, roomList);
         });
 
         socket.on('disconnect', (data) => {
