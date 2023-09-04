@@ -71,22 +71,31 @@ export async function readChatMessage(
     return db
         .execute(
             `INSERT INTO message_reads (chat_id, user_id)
-                SELECT cm.chat_id, ?
-                FROM chat_messages cm
-                WHERE cm.chat_id <= (
+            SELECT cm.chat_id, ?  -- ?에는 bbb의 user_id를 넣으세요.
+            FROM chat_messages cm
+            WHERE cm.user_id = ?  -- ?에는 aaa의 user_id를 넣으세요.
+                AND cm.room_id = ?  -- ?에는 채팅 방의 room_id를 넣으세요.
+                AND cm.chat_id <= (
                     SELECT MAX(chat_id)
                     FROM chat_messages
-                    WHERE user_id = ?
-                        AND room_id = ?
+                    WHERE user_id = ?  -- ?에는 bbb의 user_id를 넣으세요.
+                    AND room_id = ?  -- ?에는 채팅 방의 room_id를 넣으세요.
                 )
-                AND cm.room_id = ?
                 AND NOT EXISTS (
                     SELECT 1
                     FROM message_reads mr
                     WHERE mr.chat_id = cm.chat_id
-                        AND mr.user_id = ?
-                );`,
-            [user_id, user_id, room_id, room_id, participant_user_id]
+                    AND mr.user_id = ?  -- ?에는 bbb의 user_id를 넣으세요.
+                );
+            `,
+            [
+                participant_user_id,
+                user_id,
+                room_id,
+                participant_user_id,
+                room_id,
+                participant_user_id,
+            ]
         )
         .then((result: any) => {
             return result[0].insertId;
