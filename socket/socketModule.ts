@@ -25,7 +25,7 @@ const initSocket = (server: any) => {
             );
             console.log('roomLIST@#!@#!@#@#', roomList);
 
-            socket.emit(`admin readChatRoom`, roomList);
+            socket.emit(`${data} readChatRoom`, roomList);
         });
 
         socket.on('disconnect', (data) => {

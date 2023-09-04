@@ -50,7 +50,7 @@ export async function getChatRoomList(userId: string): Promise<any> {
         .then((result: any) => {
             //console.log('getMessageRoomList', result[0]);
             const data: GetChatRoomList = bufferToString(result[0]);
-            console.log('getChatRoomList', data);
+            //console.log('getChatRoomList', data);
 
             return data;
         });
