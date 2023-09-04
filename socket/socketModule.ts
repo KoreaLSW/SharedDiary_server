@@ -20,13 +20,10 @@ const initSocket = (server: any) => {
         socket.on('readChatRoomList', async (data) => {
             console.log('abc~~~~~~~~~~~~', data, userId);
 
-            if (userId === data) {
-                console.log('아이디가 같음!', data, userId);
-                const roomList: GetChatRoomList = await getChatRoomList(
-                    userId as string
-                );
-                socket.emit('readChatRoom', roomList);
-            }
+            const roomList: GetChatRoomList = await getChatRoomList(
+                data as string
+            );
+            socket.emit('readChatRoom', roomList);
         });
 
         socket.on('disconnect', (data) => {
