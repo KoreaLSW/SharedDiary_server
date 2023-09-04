@@ -26,10 +26,11 @@ export async function getChatRoomList(
         const data: GetChatRoomList = await chatRoomRepository.getChatRoomList(
             req.userId!
         );
+
         //console.log('getdiary data', data);
 
         res.status(200).json(data);
-        //getSocketIO().emit(`${req.userId} readChatRoom`, data);
+        getSocketIO().emit(`${req.userId} readChatRoom`, data);
     } catch (err) {
         console.log(err);
     }

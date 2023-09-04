@@ -1,7 +1,14 @@
 import { Request, Response } from 'express';
 import * as userRepository from '../data/auth';
 import * as chatMessageRepository from '../data/chatMessage';
-import { GetMessage, SelectMessage, User, sendMessage } from '../type/type';
+import * as chatRoomRepository from '../data/chatRoom';
+import {
+    GetChatRoomList,
+    GetMessage,
+    SelectMessage,
+    User,
+    sendMessage,
+} from '../type/type';
 import { getSocketIO } from '../socket/socketModule';
 import { IGetUserAuthInfoRequest } from '../middleware/auth';
 
@@ -32,11 +39,15 @@ export async function getChatMessageList(
             user_id,
             participant_user_id
         );
-        //console.log('getdiary data', data);
+
+        const data2: GetChatRoomList = await chatRoomRepository.getChatRoomList(
+            req.userId!
+        );
 
         res.status(200).json(data);
 
         getSocketIO().emit(`${room_id} chatMessage`, data);
+        getSocketIO().emit(`${participant_user_id} readChatRoom`, data2);
     } catch (err) {
         console.log(err);
     }

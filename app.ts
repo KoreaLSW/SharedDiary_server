@@ -18,7 +18,7 @@ import chatMessageRoute from './router/chatMessage';
 import { db } from './db/mysql';
 import { config } from './config';
 import cookieParser from 'cookie-parser';
-import initSocket from './socket/socketModule';
+import initSocket, { getSocketIO } from './socket/socketModule';
 
 const app = express();
 

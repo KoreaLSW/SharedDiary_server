@@ -17,16 +17,16 @@ const initSocket = (server: any) => {
         const userId = socket.handshake.query.user;
         console.log('소켓 클라이언트 연결됨 v 1.0.3');
 
-        socket.on('readChatRoomList', async (data) => {
-            console.log('abc~~~~~~~~~~~~', data, userId);
+        // socket.on('readChatRoomList', async (data) => {
+        //     console.log('abc~~~~~~~~~~~~', data, userId);
 
-            const roomList: GetChatRoomList = await getChatRoomList(
-                data as string
-            );
-            console.log('roomLIST@#!@#!@#@#', roomList);
+        //     const roomList: GetChatRoomList = await getChatRoomList(
+        //         data as string
+        //     );
+        //     console.log('roomLIST@#!@#!@#@#', roomList);
 
-            socket.emit(`admin readChatRoom`, roomList);
-        });
+        //     socket.emit(`admin readChatRoom`, roomList);
+        // });
 
         socket.on('disconnect', (data) => {
             console.log('클라이언트 연결 해제됨', data);
