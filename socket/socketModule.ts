@@ -15,7 +15,7 @@ const initSocket = (server: any) => {
 
     socketIO.on('connection', async (socket: Socket) => {
         const userId = socket.handshake.query.user;
-        console.log('소켓 클라이언트 연결됨 v 1.0.1');
+        console.log('소켓 클라이언트 연결됨 v 1.0.2');
 
         socket.on('readChatRoomList', async (data) => {
             console.log('abc~~~~~~~~~~~~', data, userId);
