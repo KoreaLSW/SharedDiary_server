@@ -29,7 +29,7 @@ export async function getChatRoomList(
         //console.log('getdiary data', data);
 
         res.status(200).json(data);
-        getSocketIO().emit(`admin readChatRoom`, data);
+        getSocketIO().emit(`readChatRoom`, data);
     } catch (err) {
         console.log(err);
     }
