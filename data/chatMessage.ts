@@ -73,35 +73,27 @@ export async function readChatMessage(
             `INSERT INTO message_reads (chat_id, user_id)
             SELECT cm.chat_id, ?
             FROM chat_messages cm
-            WHERE cm.chat_id >= (
-                SELECT MIN(chat_id)
-                FROM chat_messages
-                WHERE user_id = ?
-                AND room_id = ?
-            )
+            WHERE cm.room_id = ?
+            AND cm.user_id = ?
             AND cm.chat_id <= (
-                SELECT MAX(chat_id)
+                SELECT COALESCE(MIN(chat_id), 0)
                 FROM chat_messages
-                WHERE user_id = ?
-                AND room_id = ?
+                WHERE room_id = ?
+                AND user_id = ?
             )
-            AND cm.room_id = ?
             AND NOT EXISTS (
                 SELECT 1
                 FROM message_reads mr
                 WHERE mr.chat_id = cm.chat_id
                 AND mr.user_id = ?
             );
-            
-            
             `,
             [
                 user_id,
-                participant_user_id,
                 room_id,
                 participant_user_id,
                 room_id,
-                room_id,
+                participant_user_id,
                 user_id,
             ]
         )
