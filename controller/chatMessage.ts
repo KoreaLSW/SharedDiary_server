@@ -41,7 +41,7 @@ export async function getChatMessageList(
         );
 
         const data2: GetChatRoomList = await chatRoomRepository.getChatRoomList(
-            req.userId!
+            participant_user_id
         );
 
         res.status(200).json(data);
