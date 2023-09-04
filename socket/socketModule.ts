@@ -21,6 +21,7 @@ const initSocket = (server: any) => {
             console.log('abc~~~~~~~~~~~~', data, userId);
 
             if (userId === data) {
+                console.log('아이디가 같음!', data, userId);
                 const roomList: GetChatRoomList = await getChatRoomList(
                     userId as string
                 );
