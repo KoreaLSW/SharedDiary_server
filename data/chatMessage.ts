@@ -73,7 +73,13 @@ export async function readChatMessage(
             `INSERT INTO message_reads (chat_id, user_id)
             SELECT cm.chat_id, ?
             FROM chat_messages cm
-            WHERE cm.chat_id <= (
+            WHERE cm.chat_id >= (
+                SELECT MIN(chat_id)
+                FROM chat_messages
+                WHERE user_id = ?
+                AND room_id = ?
+            )
+            AND cm.chat_id <= (
                 SELECT MAX(chat_id)
                 FROM chat_messages
                 WHERE user_id = ?
@@ -87,8 +93,17 @@ export async function readChatMessage(
                 AND mr.user_id = ?
             );
             
+            
             `,
-            [user_id, participant_user_id, room_id, room_id, user_id]
+            [
+                user_id,
+                participant_user_id,
+                room_id,
+                participant_user_id,
+                room_id,
+                room_id,
+                user_id,
+            ]
         )
         .then((result: any) => {
             return result[0].insertId;
