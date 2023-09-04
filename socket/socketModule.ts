@@ -17,6 +17,19 @@ const initSocket = (server: any) => {
         const userId = socket.handshake.query.user;
         console.log('소켓 클라이언트 연결됨');
 
+        // socket.on('chat', async () => {
+        //     console.log('sendReadChatRoom!!!!');
+
+        //     if (userId) {
+        //         const roomList: GetChatRoomList = await getChatRoomList(
+        //             userId as string
+        //         );
+        //         console.log('roomList', roomList);
+
+        //         socket.emit(`readChatRoom`, roomList);
+        //     }
+        // });
+
         socket.use((packet, next) => {
             const token = socket.handshake.auth.token;
             if (!token) {
@@ -34,14 +47,9 @@ const initSocket = (server: any) => {
             );
         });
 
-        if (userId) {
-            const roomList: GetChatRoomList = await getChatRoomList(
-                userId as string
-            );
-            console.log('roomList', roomList);
-
-            socket.emit(`readChatRoom`, roomList);
-        }
+        socket.on('chat', (data) => {
+            console.log('chaaaaaaaaaaaaaaaaaat!', data);
+        });
 
         socket.on('disconnect', (data) => {
             console.log('클라이언트 연결 해제됨', data);
