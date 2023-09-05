@@ -33,11 +33,14 @@ export const isAuth = async (
     }
 
     if (!token) {
+        console.log('11111111111');
+
         return res.status(401).json(AUTH_ERROR);
     }
 
     jwt.verify(token, config.jwt.secretKey, async (error, decoded: any) => {
         if (error) {
+            console.log('2222222222222222', error);
             return res.status(401).json(AUTH_ERROR);
         }
         let id = '';
@@ -49,6 +52,7 @@ export const isAuth = async (
         const user = await userRepository.findByUserId(id);
         //const userString = bufferToString(user);
         if (!user) {
+            console.log('33333333333333');
             return res.status(401).json(AUTH_ERROR);
         }
 
