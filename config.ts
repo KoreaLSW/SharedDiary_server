@@ -35,4 +35,8 @@ export const config = {
         user: required('FTP_SERVER_USER'),
         password: required('FTP_SERVER_PASSWORD'),
     },
+    rateLimit: {
+        windowMs: 60000,
+        maxRequest: 100,
+    },
 };

@@ -19,6 +19,7 @@ import { db } from './db/mysql';
 import { config } from './config';
 import cookieParser from 'cookie-parser';
 import initSocket, { getSocketIO } from './socket/socketModule';
+import rateLimiter from './middleware/rate-limiter';
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(cookieParser());
 app.use(cors(corsOption));
+app.use(rateLimiter);
 
 app.use('/auth', authRoute);
 app.use('/user', userRoute);
