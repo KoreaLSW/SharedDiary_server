@@ -33,7 +33,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(cookieParser());
 app.use(cors(corsOption));
-app.use(rateLimiter);
+//app.use(rateLimiter);
 
 app.use('/auth', authRoute);
 app.use('/user', userRoute);
