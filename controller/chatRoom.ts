@@ -63,7 +63,7 @@ export async function removeChatRoom(
 
     await chatRoomRepository.removeRoom(users);
     res.sendStatus(204);
-    getSocketIO().emit(`${req.userId} readChatRoom`);
+    getSocketIO().emit(`${users.participant_user_id} readChatRoom`);
 }
 
 export async function updateChatRoom(

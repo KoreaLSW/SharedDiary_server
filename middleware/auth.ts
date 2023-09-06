@@ -57,7 +57,7 @@ export const isAuth = async (
         }
 
         const userString = bufferToString(user.user_id);
-        console.log('isAuth User', userString);
+        console.log('isAuth User', `${userString}`);
         console.log('isAuth IP', req.ip);
         //console.log('isAuth token', token);
         req.userId = userString; // req.customData
