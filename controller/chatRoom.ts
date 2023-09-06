@@ -55,7 +55,7 @@ export async function removeChatRoom(
     res: Response
 ) {
     const users: ChatRoomUsers = req.query as ChatRoomUsers;
-    console.log('removeChatRoom', users);
+    console.log('removeChatRoom', req.query);
 
     if (users.user_id !== req.userId) {
         return res.sendStatus(403);
