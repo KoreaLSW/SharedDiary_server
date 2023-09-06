@@ -31,9 +31,8 @@ export async function getChatRoomList(
             const createDate = new Date(item.create_date);
             const messageDate = new Date(item.message_date);
 
-            // 15시간을 더합니다.
-            createDate.setHours(createDate.getHours() + 15);
-            messageDate.setHours(messageDate.getHours() + 15);
+            createDate.setHours(createDate.getHours() - 9);
+            messageDate.setHours(messageDate.getHours() - 9);
 
             // 다시 문자열로 변환하여 할당합니다.
             item.create_date = createDate.toISOString();
