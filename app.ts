@@ -27,6 +27,7 @@ const corsOption = {
     origin: config.cors.allowedOrigin,
     optionsSuccessStatus: 200,
     credentials: true, // allow the Access-Control-Allow-Credentials
+    trustProxy: false, // 'X-Forwarded-For' 헤더를 신뢰하지 않도록 설정
 };
 
 app.use(express.json());
