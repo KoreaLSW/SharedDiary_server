@@ -70,28 +70,13 @@ export async function updatePassword(user: User): Promise<any> {
 }
 
 export async function updateUserInfo(user: User): Promise<any> {
-    const {
-        user_id,
-        nickname,
-        email,
-        birthday,
-        create_date,
-        introduction,
-        profile_img,
-    } = user;
+    const { user_id, nickname, email, birthday, introduction, profile_img } =
+        user;
     return (
         db
             .execute(
-                'UPDATE user_info SET nickname = ?, email = ?, birthday =?, create_date = ?, introduction = ?, profile_img = ? WHERE user_id = ?',
-                [
-                    nickname,
-                    email,
-                    birthday,
-                    create_date,
-                    introduction,
-                    profile_img,
-                    user_id,
-                ]
+                'UPDATE user_info SET nickname = ?, email = ?, birthday =?,  introduction = ?, profile_img = ? WHERE user_id = ?',
+                [nickname, email, birthday, introduction, profile_img, user_id]
             )
             // restul 확인해보고 any타입 바꾸기
             .then((result: any) => {
