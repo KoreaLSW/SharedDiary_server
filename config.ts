@@ -37,6 +37,6 @@ export const config = {
     },
     rateLimit: {
         windowMs: 60000,
-        maxRequest: 1000,
+        maxRequest: 100,
     },
 };
