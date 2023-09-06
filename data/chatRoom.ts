@@ -14,7 +14,7 @@ export async function getChatRoomList(userId: string): Promise<any> {
                     cm.chat_id,
                     IFNULL(unread_counts.unread_count, 0) AS unread_count,
                     COALESCE(cm.message, 'No messages') as message,
-                    COALESCE(cm.message_date, cr.create_date) as ordered_date
+                    COALESCE(cm.message_date, cr.create_date) as message_date
                 FROM chat_rooms cr
                 JOIN room_participants rp ON cr.room_id = rp.room_id
                 JOIN room_participants rp_opponent ON cr.room_id = rp_opponent.room_id AND rp_opponent.user_id != ?
@@ -45,7 +45,7 @@ export async function getChatRoomList(userId: string): Promise<any> {
                 ) max_chat ON cr.room_id = max_chat.room_id
                 LEFT JOIN chat_messages cm ON max_chat.room_id = cm.room_id AND max_chat.max_chat_id = cm.chat_id
                 WHERE rp.user_id = ?
-                ORDER BY ordered_date DESC;`,
+                ORDER BY message_date DESC;`,
             [userId, userId, userId, userId, userId, userId]
         )
         .then((result: any) => {
