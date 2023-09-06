@@ -24,10 +24,7 @@ export async function signup(req: Request, res: Response) {
     // 이를 해결하기 위해 undefined를 null로 대체해야 합니다.
     user.introduction =
         user.introduction === undefined ? null : user.introduction;
-    user.profile_img =
-        user.profile_img === undefined
-            ? 'https://dmemema.cafe24.com/img/noprofile/noprofile.jpg'
-            : user.profile_img;
+    user.profile_img = user.profile_img === undefined ? null : user.profile_img;
 
     const userCheck = await userRepository.findByUserId(user.user_id);
     if (userCheck) {
@@ -52,9 +49,7 @@ export async function signup(req: Request, res: Response) {
     );
 
     if (profilePath) {
-        user.profile_img =
-            profilePath[0] ??
-            'https://dmemema.cafe24.com/img/noprofile/noprofile.jpg';
+        user.profile_img = profilePath[0] ?? null;
     }
 
     // 비밀번호를 암호화하는작업
