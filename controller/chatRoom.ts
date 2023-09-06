@@ -46,8 +46,13 @@ export async function createChatRoom(
     console.log('createChatRoom', users);
 
     const data = await chatRoomRepository.createRoom(users);
+
+    const data2: GetChatRoomList = await chatRoomRepository.getChatRoomList(
+        users.participant_user_id
+    );
+
     res.status(201).json(data);
-    getSocketIO().emit(`${req.userId} readChatRoom`, data);
+    getSocketIO().emit(`${users.participant_user_id} readChatRoom`, data2);
 }
 
 export async function removeChatRoom(
