@@ -6,37 +6,37 @@ export async function getChatRoomList(userId: string): Promise<any> {
     return db
         .execute(
             `SELECT cr.room_id, 
-            cr.room_name, 
-            cr.create_date, 
-            CASE WHEN rp.user_id = ? THEN rp_opponent.user_id ELSE rp.user_id END AS participant_user_id,
-            ui.profile_img,
-            ui.nickname AS participant_nickname,
-            cm.chat_id,
-            IFNULL(unread_counts.unread_count, 0) AS unread_count,
-            COALESCE(cm.message, 'No messages') as message,
-            cm.message_date
+                    cr.room_name, 
+                    cr.create_date, 
+                    CASE WHEN rp.user_id = ? THEN rp_opponent.user_id ELSE rp.user_id END AS participant_user_id,
+                    ui.profile_img,
+                    ui.nickname AS participant_nickname,
+                    cm.chat_id,
+                    IFNULL(unread_counts.unread_count, 0) AS unread_count,
+                    COALESCE(cm.message, 'No messages') as message,
+                    COALESCE(cm.message_date, cr.create_date) as ordered_date
                 FROM chat_rooms cr
                 JOIN room_participants rp ON cr.room_id = rp.room_id
                 JOIN room_participants rp_opponent ON cr.room_id = rp_opponent.room_id AND rp_opponent.user_id != ?
                 JOIN user_info ui ON ui.user_id = rp_opponent.user_id
                 LEFT JOIN (
                     SELECT cr.room_id,
-                        COALESCE(unread_count, 0) AS unread_count
-                FROM chat_rooms cr
-                JOIN room_participants rp ON cr.room_id = rp.room_id
-                LEFT JOIN (
-                    SELECT cm.room_id,
-                            COUNT(*) AS unread_count
-                    FROM chat_messages cm
-                    LEFT JOIN message_reads mr ON cm.chat_id = mr.chat_id AND mr.user_id = ?
-                    JOIN room_participants rp ON cm.room_id = rp.room_id
-                    WHERE cm.user_id = rp.user_id 
-                    AND cm.room_id = rp.room_id
-                    AND rp.user_id != ?
-                    AND mr.read_id IS NULL
-                    GROUP BY cm.room_id
-                ) unread_counts ON cr.room_id = unread_counts.room_id
-                WHERE rp.user_id = ?
+                            COALESCE(unread_count, 0) AS unread_count
+                    FROM chat_rooms cr
+                    JOIN room_participants rp ON cr.room_id = rp.room_id
+                    LEFT JOIN (
+                        SELECT cm.room_id,
+                                COUNT(*) AS unread_count
+                        FROM chat_messages cm
+                        LEFT JOIN message_reads mr ON cm.chat_id = mr.chat_id AND mr.user_id = ?
+                        JOIN room_participants rp ON cm.room_id = rp.room_id
+                        WHERE cm.user_id = rp.user_id 
+                        AND cm.room_id = rp.room_id
+                        AND rp.user_id != ?
+                        AND mr.read_id IS NULL
+                        GROUP BY cm.room_id
+                    ) unread_counts ON cr.room_id = unread_counts.room_id
+                    WHERE rp.user_id = ?
                 ) unread_counts ON cr.room_id = unread_counts.room_id
                 LEFT JOIN (
                     SELECT room_id, MAX(chat_id) AS max_chat_id
@@ -44,7 +44,8 @@ export async function getChatRoomList(userId: string): Promise<any> {
                     GROUP BY room_id
                 ) max_chat ON cr.room_id = max_chat.room_id
                 LEFT JOIN chat_messages cm ON max_chat.room_id = cm.room_id AND max_chat.max_chat_id = cm.chat_id
-                WHERE rp.user_id = ?;`,
+                WHERE rp.user_id = ?
+                ORDER BY ordered_date DESC;`,
             [userId, userId, userId, userId, userId, userId]
         )
         .then((result: any) => {
