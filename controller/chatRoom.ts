@@ -26,21 +26,7 @@ export async function getChatRoomList(
         let data: GetChatRoomList[] = await chatRoomRepository.getChatRoomList(
             req.userId!
         );
-        data = data.map((item: GetChatRoomList) => {
-            // create_date와 message_date를 Date 객체로 파싱합니다.
-            const createDate = new Date(item.create_date);
-            const messageDate = new Date(item.message_date);
 
-            createDate.setHours(createDate.getHours() - 9);
-            messageDate.setHours(messageDate.getHours() - 9);
-
-            // 다시 문자열로 변환하여 할당합니다.
-            item.create_date = createDate.toISOString();
-            item.message_date = messageDate.toISOString();
-
-            // 수정된 item을 반환합니다.
-            return item;
-        });
         //console.log('getdiary data', data);
 
         res.status(200).json(data);
